@@ -1,0 +1,49 @@
+---
+import Html from "@/components/layout/Html.astro";
+import Head from "@/components/layout/Head.astro";
+import Email from "@/components/ui/Email.astro";
+import { serverEnv } from "$/typed-env";
+
+const { contactEmail } = serverEnv;
+// BUG: astro strips attributes when using body as component child.
+const Body = "body";
+---
+
+<Html>
+  <Head>
+    <title>Hello!</title>
+  </Head>
+  <Body
+    class="grid place-content-center items-center gap-2 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] p-4 md:grid-cols-[auto_auto]"
+  >
+    <div
+      class:list={[
+        contactEmail && "row-span-2",
+        "animate-in fade-in slide-in-from-bottom fill-mode-backwards flex aspect-square items-center justify-center self-stretch duration-1000 ease-out max-md:hidden",
+      ]}
+    >
+      <span
+        class:list={[
+          "text-center align-middle",
+          contactEmail ? "text-6xl" : "text-3xl",
+        ]}
+        set:text="👋"
+      />
+    </div>
+    <h1
+      class:list={[
+        "animate-in slide-in-from-bottom fade-in fill-mode-backwards text-2xl font-semibold tracking-tight text-pretty delay-400 duration-1000 ease-in-out max-md:text-center",
+        contactEmail && "mt-2",
+      ]}
+    >
+      This email domain is registered to me as an individual.
+    </h1>
+    {
+      contactEmail && (
+        <p class="animate-in slide-in-from-bottom fade-in fill-mode-backwards mb-2 text-lg text-pretty delay-800 duration-1000 ease-in-out max-md:text-center">
+          Get in touch at <Email address={contactEmail} />
+        </p>
+      )
+    }
+  </Body>
+</Html>

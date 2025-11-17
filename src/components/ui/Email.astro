@@ -1,0 +1,18 @@
+---
+import { z } from "zod";
+
+const emailSchema = z.string().email();
+
+export type Props = {
+  address: string;
+};
+const emailAddress = emailSchema.parse(Astro.props.address);
+---
+
+<a
+  rel="external noreferrer"
+  data-astro-prefetch="false"
+  href={`mailto:${emailAddress}`}
+  class="shrink-0 font-medium whitespace-nowrap text-blue-700 underline-offset-4 hover:underline"
+  set:text={emailAddress}
+/>

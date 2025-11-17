@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.141 0.005 285.823);
+  --color-border: oklch(0.92 0.004 286.32);
+  --color-ring: oklch(0.705 0.015 286.067);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}

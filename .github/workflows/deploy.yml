@@ -1,0 +1,76 @@
+name: Deploy
+run-name: 🚀 Deploy
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - deployed
+
+env:
+  ASTRO_TELEMETRY_DISABLED: true
+  FORCE_COLOR: true
+
+jobs:
+  Check:
+    name: Check codebase
+    uses: ./.github/workflows/check.yml
+
+  Pages:
+    name: Check repository Pages
+    runs-on: ubuntu-latest
+    outputs:
+      origin: ${{ steps.about-pages.outputs.origin }}
+      base_path: ${{ steps.about-pages.outputs.base_path }}
+    steps:
+      - name: Where are we deploying to?
+        id: about-pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+
+  Build:
+    needs:
+      - Check
+      - Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: 24.11.0
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        env:
+          deployOrigin: ${{ needs.Pages.outputs.origin }}
+          deployPath: ${{ needs.Pages.outputs.base_path }}
+          contactEmail: ${{ vars.CONTACT_EMAIL }}
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+        with:
+          path: dist/
+
+  Deploy:
+    needs:
+      - Build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: deployment
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

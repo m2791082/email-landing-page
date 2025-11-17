@@ -1,0 +1,16 @@
+---
+import PersonFavicon from "@/assets/person-emoji-favicon.svg";
+import type { HTMLAttributes } from "astro/types";
+
+export type Props = HTMLAttributes<"head">;
+
+const headProps = Astro.props;
+---
+
+<head {...headProps}>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="only light" />
+  <link rel="icon" href={PersonFavicon.src} type="image/svg+xml" />
+  <slot />
+</head>
