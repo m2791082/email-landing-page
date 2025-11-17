@@ -9,10 +9,7 @@ const prettierConfig: Config & PluginOptions = {
   trailingComma: "all",
   arrowParens: "always",
   endOfLine: "lf",
-  plugins: [
-    "prettier-plugin-astro",
-    "prettier-plugin-tailwindcss",
-  ],
+  plugins: ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
   overrides: [
     {
       files: "*.astro",
