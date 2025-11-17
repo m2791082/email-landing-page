@@ -26,6 +26,11 @@ const envSchema = z
       .transform((rawURI) => {
         return encodeURI(rawURI);
       })
+      .or(
+        z.literal("").transform(() => {
+          return undefined;
+        }),
+      )
       .describe("The base path to serve the pages from.")
       .optional(),
     /**
